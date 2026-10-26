@@ -1,16 +1,14 @@
 from fastapi import FastAPI
+from app.api.health import router as health_router
 
-app= FastAPI(
+app = FastAPI(
     title="Dynamic AI Chatbot",
-    description ="An advanced GPT-powered chatbot API",
-    version ="1.0.0"
+    descriptions="An advanced GPT-powered chatbot API",
+    versions="1.0.0",
 )
 
 @app.get("/")
 def home():
-    return{"message": "Dynamic AI Chatbot API is running!"}
+    return {"message": "Dynamic AI Chatbot API is running!"}
 
-@app.get("/health")
-def health_check():
-    return{"status": "healthy"}
-
+app.include_router(health_router)
