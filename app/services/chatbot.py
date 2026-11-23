@@ -1,14 +1,35 @@
 
-def generate_reply(message: str) -> str:
-    """
-    Generate a temporary reply for the supplied message.
+import ollama
 
-    This placeholder will later be replaced by our GPT-powered
-    response generation and RAG pipeline.
-    """
-    cleaned_message = message.strip()
 
-    return (
-        f"You said: {cleaned_message}. "
-        "The chatbot service is working, but AI integration is not enabled yet."
-    )
+def generate_reply(message: str, conversation_history=None) -> str:
+    """
+    Generate a response using the local Llama 3.2 model.
+    """
+
+    messages = []
+
+    # Include previous conversation context
+    if conversation_history:
+        for item in conversation_history:
+            messages.append({
+                "role": item.role,
+                "content": item.content
+            })
+
+    # Add the latest user message
+    messages.append({
+        "role": "user",
+        "content": message
+    })
+
+    try:
+        response = ollama.chat(
+            model="llama3.2",
+            messages=messages
+        )
+
+        return response["message"]["content"]
+
+    except Exception as error:
+        return f"Local AI service error: {str(error)}"
